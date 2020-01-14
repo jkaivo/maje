@@ -10,7 +10,7 @@ static struct majefile *tail = NULL;
 
 static int addfile(const char *path, const struct stat *st, int flags, struct FTW *ft)
 {
-	(void)st; (void)flags; (void)ft;
+	(void)flags; (void)ft;
 
 	if (path[0] == '.' && path[1] == '/') {
 		path += 2;
