@@ -7,7 +7,9 @@
 default: all
 
 CC=c99
+LD=$(CC)
 CFLAGS=-Wall -Wextra -Wpedantic -Werror -g
+LDFLAGS=
 
 all: maje
 
@@ -31,4 +33,4 @@ maje.o: maje.c
 	$(CC) $(CFLAGS) -c maje.c
 
 maje:
-	$(CC) -o $@ *.o
+	$(LD) $(LDFLAGS) -o $@ *.o
