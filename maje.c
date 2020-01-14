@@ -1,4 +1,5 @@
 #define _XOPEN_SOURCE 700
+#include <libgen.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -37,6 +38,7 @@ int main(int argc, char *argv[])
 	}
 	char *target = strdup(mainname);
 	target[strlen(target) - 2] = '\0';
+	target = basename(target);
 
 	FILE *makefile = fopen("Makefile", "w");
 	if (makefile == NULL) {
