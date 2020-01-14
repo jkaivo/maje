@@ -27,17 +27,17 @@ static void make_header(FILE *makefile, const char *target)
 	fprintf(makefile, "\trm -f %s *.o\n\n", target);
 }
 
-static void addfile(FILE *makefile, const char *src, const char *target)
+static void add_object(FILE *makefile, const char *src, const char *target)
 {
-	char *obj = strdup(src);
+	char *fullobj = strdup(src);
+	char *obj = basename(fullobj);
 	obj[strlen(obj) - 1] = 'o';
-	obj = basename(obj);
 
 	fprintf(makefile, "%s: %s\n", target, obj);
 	fprintf(makefile, "%s: %s\n", obj, src);
 	fprintf(makefile, "\t$(CC) $(CFLAGS) -c %s\n\n", src);
 
-	free(obj);
+	free(fullobj);
 }
 
 void make_makefile(const char *makepath, struct majefile *sources, const char *target)
@@ -50,7 +50,7 @@ void make_makefile(const char *makepath, struct majefile *sources, const char *t
 
 	make_header(makefile, target);
 	for (struct majefile *src = sources; src != NULL; src = src->next) {
-		addfile(makefile, src->path, target);
+		add_object(makefile, src->path, target);
 	}
 
 	fprintf(makefile, "%s:\n", target);
