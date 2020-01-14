@@ -23,11 +23,13 @@ static int addfile(const char *path, const struct stat *st, int flags, struct FT
 		}
 		filelist = tmp;
 
-		filelist[nfiles] = malloc(sizeof(*filelist[nfiles]) + strlen(path) + 1);
+		filelist[nfiles] = calloc(1, sizeof(*filelist[nfiles]) + strlen(path) + 1);
 
 		filelist[nfiles]->st = *st;
 		strcpy(filelist[nfiles]->path, strdup(path));
-		//filelist[nfiles + 1] = NULL;
+
+		filelist[nfiles + 1] = NULL;
+
 		nfiles++;
 	}
 
