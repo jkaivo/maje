@@ -44,7 +44,7 @@ static bool matches(const char * restrict path, const regex_t * restrict re)
 char *find_main(char **sources)
 {
 	regex_t re;
-	int rc = regcomp(&re, "int[[:space:]]+main[[:space:]\(]", REG_EXTENDED | REG_NEWLINE | REG_NOSUB);
+	int rc = regcomp(&re, "int[[:space:]]+main[[:space:]\\(]", REG_EXTENDED | REG_NEWLINE | REG_NOSUB);
 	assert(rc == 0);
 	char *ret = NULL;
 
