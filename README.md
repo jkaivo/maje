@@ -18,7 +18,17 @@ There are a few restrictions:
 file containing main() (e.g. if main() is in maje.c, the binary will be called
 maje).
 
-Maje has no command line options, and supports only a single (optional)
-operand. If given, the operand is the path to a directory containing source
-for an out-of-source-tree build. If not specified, Maje defaults to using
-the current directory (.).
+Usage
+=====
+
+Run Maje with:
+
+    maje [-n] [dir]
+
+By default, Maje will execute `make` when it is done creating the Makefile. Use
+the `-n` option to prevent this.
+
+By default, Maje generates a Makefile for sources in the current directory.
+You can specify a directory as a command line parameter to generate a Makefile
+to build binaries in a separate directory from the source. Maje will always
+build Makefiles and binaries in the current directory.
