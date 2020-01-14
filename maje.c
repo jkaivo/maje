@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 		srcdir = ".";
 	}
 
-	char **sources = find_source_files(srcdir);
+	struct majefile **sources = find_source_files(srcdir);
 	char *mainname = find_main(sources);
 	if (!mainname) {
 		printf("libraries not yet supported\n");
