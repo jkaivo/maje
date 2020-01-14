@@ -8,16 +8,21 @@
 
 static void usage(char *progname)
 {
-	printf("usage: %s [dir]\n", progname);
+	printf("usage: %s [-n] [dir]\n", progname);
 }
 
 int main(int argc, char *argv[])
 {
+	int noexec = 0;
 	char *srcdir = NULL;
 
 	int c;
-	while ((c = getopt(argc, argv, "")) != -1) {
+	while ((c = getopt(argc, argv, "n")) != -1) {
 		switch (c) {
+		case 'n':
+			noexec = 1;
+			break;
+
 		default:
 			usage(argv[0]);
 			return 1;
@@ -53,5 +58,10 @@ int main(int argc, char *argv[])
 
 	make_makefile("Makefile", sources, target);
 
-	return 0;
+	if (noexec) {
+		return 0;
+	}
+
+	char *args[] = { "make", NULL };
+	execvp(args[0], args);
 }
