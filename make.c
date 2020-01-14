@@ -16,7 +16,10 @@ static void make_header(FILE *makefile, const char *target)
 	fprintf(makefile, "default: all\n\n");
 
 	fprintf(makefile, "CC=c99\n");
-	fprintf(makefile, "CFLAGS=-Wall -Wextra -Wpedantic -Werror -g\n\n");
+	fprintf(makefile, "LD=$(CC)\n");
+	fprintf(makefile, "CFLAGS=-Wall -Wextra -Wpedantic -Werror -g\n");
+	fprintf(makefile, "LDFLAGS=\n");
+	fprintf(makefile, "\n");
 
 	fprintf(makefile, "all: %s\n\n", target);
 
@@ -51,7 +54,7 @@ void make_makefile(const char *makepath, char **sources, const char *target)
 	}
 
 	fprintf(makefile, "%s:\n", target);
-	fprintf(makefile, "\t$(CC) -o $@ *.o\n");
+	fprintf(makefile, "\t$(LD) $(LDFLAGS) -o $@ *.o\n");
 
 	fclose(makefile);
 }
