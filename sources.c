@@ -8,7 +8,7 @@
 static struct majefile *filelist = NULL;
 static struct majefile *tail = NULL;
 
-static int addfile(const char *path, const struct stat *st, int flags, struct FTW *ft)
+static int add_source(const char *path, const struct stat *st, int flags, struct FTW *ft)
 {
 	(void)flags; (void)ft;
 
@@ -40,6 +40,6 @@ static int addfile(const char *path, const struct stat *st, int flags, struct FT
 
 struct majefile * find_source_files(const char *dir)
 {
-	nftw(dir, addfile, -1, 0);
+	nftw(dir, add_source, -1, 0);
 	return filelist;
 }
