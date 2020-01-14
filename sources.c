@@ -5,8 +5,8 @@
 
 #include "maje.h"
 
-static struct majefile **filelist = NULL;
-static size_t nfiles = 0;
+static struct majefile *filelist = NULL;
+static struct majefile *tail = NULL;
 
 static int addfile(const char *path, const struct stat *st, int flags, struct FTW *ft)
 {
@@ -17,26 +17,28 @@ static int addfile(const char *path, const struct stat *st, int flags, struct FT
 	}
 
 	if (strcmp(path + strlen(path) - 2, ".c") == 0) {
-		struct majefile **tmp = realloc(filelist, sizeof(*filelist) * (nfiles + 2));
+		struct majefile *tmp = malloc(sizeof(*filelist) + strlen(path) + 1);
 		if (tmp == NULL) {
 			return 1;
 		}
-		filelist = tmp;
 
-		filelist[nfiles] = calloc(1, sizeof(*filelist[nfiles]) + strlen(path) + 1);
+		tmp->next = NULL;
+		tmp->st = *st;
+		strcpy(tmp->path, path);
 
-		filelist[nfiles]->st = *st;
-		strcpy(filelist[nfiles]->path, strdup(path));
-
-		filelist[nfiles + 1] = NULL;
-
-		nfiles++;
+		if (tail == NULL) {
+			filelist = tmp;
+			tail = filelist;
+		} else {
+			tail->next = tmp;
+			tail = tail->next;
+		}
 	}
 
 	return 0;
 }
 
-struct majefile ** find_source_files(const char *dir)
+struct majefile * find_source_files(const char *dir)
 {
 	nftw(dir, addfile, -1, 0);
 	return filelist;

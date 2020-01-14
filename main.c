@@ -34,16 +34,16 @@ static bool matches(const struct majefile * restrict file, const regex_t * restr
 	return ret;
 }
 
-char *find_main(struct majefile **sources)
+char *find_main(struct majefile *sources)
 {
 	regex_t re;
 	int rc = regcomp(&re, "int[[:space:]]+main[[:space:]\\(]", REG_EXTENDED | REG_NEWLINE | REG_NOSUB);
 	assert(rc == 0);
 	char *ret = NULL;
 
-	for (struct majefile **src = sources; *src != NULL; src++) {
-		if (matches(*src, &re)) {
-			ret = (*src)->path;
+	for (struct majefile *src = sources; src != NULL; src = src->next) {
+		if (matches(src, &re)) {
+			ret = src->path;
 			break;
 		}
 	}

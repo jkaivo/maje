@@ -40,7 +40,7 @@ static void addfile(FILE *makefile, const char *src, const char *target)
 	free(obj);
 }
 
-void make_makefile(const char *makepath, struct majefile **sources, const char *target)
+void make_makefile(const char *makepath, struct majefile *sources, const char *target)
 {
 	FILE *makefile = fopen(makepath, "w");
 	if (makefile == NULL) {
@@ -49,8 +49,8 @@ void make_makefile(const char *makepath, struct majefile **sources, const char *
 	}
 
 	make_header(makefile, target);
-	for (struct majefile **src = sources; *src != NULL; src++) {
-		addfile(makefile, (*src)->path, target);
+	for (struct majefile *src = sources; src != NULL; src = src->next) {
+		addfile(makefile, src->path, target);
 	}
 
 	fprintf(makefile, "%s:\n", target);
