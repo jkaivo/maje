@@ -1,4 +1,5 @@
 #define _XOPEN_SOURCE 700
+#include <string.h>
 #include <stdio.h>
 
 #include "maje.h"
@@ -19,8 +20,11 @@ static void make_header(FILE *makefile, const char *target)
 
 static void addfile(FILE *makefile, const char *src, const char *target)
 {
-	fprintf(makefile, "%s: %s\n", src, src);
-	fprintf(makefile, "%s: %s\n", target, src);
+	char *obj = strdup(src);
+	obj[strlen(obj) - 1] = 'o';
+
+	fprintf(makefile, "%s: %s\n", obj, src);
+	fprintf(makefile, "%s: %s\n", target, obj);
 }
 
 void make_makefile(const char *makepath, char **sources, const char *target)
@@ -37,11 +41,7 @@ void make_makefile(const char *makepath, char **sources, const char *target)
 	}
 
 	fprintf(makefile, "%s:\n", target);
-	fprintf(makefile, "\t$(CC) -o $@");
-	for (char **src = sources; *src != NULL; src++) {
-		fprintf(makefile, " %s", *src);
-	}
-	fprintf(makefile, "\n");
+	fprintf(makefile, "\t$(CC) -o $@ *.o\n");
 
 	fclose(makefile);
 }
