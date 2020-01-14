@@ -24,6 +24,11 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	if (optind < argc - 1) {
+		fprintf(stderr, "maje: extra operands\n");
+		return 1;
+	}
+
 	srcdir = argv[optind];
 
 	if (srcdir == NULL) {
