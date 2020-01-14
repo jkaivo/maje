@@ -2,6 +2,7 @@
 #include <libgen.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "maje.h"
 
@@ -32,6 +33,8 @@ static void addfile(FILE *makefile, const char *src, const char *target)
 	fprintf(makefile, "%s: %s\n", target, obj);
 	fprintf(makefile, "%s: %s\n", obj, src);
 	fprintf(makefile, "\t$(CC) $(CFLAGS) -c %s\n\n", src);
+
+	free(obj);
 }
 
 void make_makefile(const char *makepath, char **sources, const char *target)
