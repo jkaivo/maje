@@ -10,27 +10,42 @@ CC=c99
 LD=$(CC)
 CFLAGS=-Wall -Wextra -Wpedantic -Werror -g
 LDFLAGS=
+LDLIBS=
 
 all: maje
 
 clean:
 	rm -f maje *.o
 
-maje: make.o
-make.o: make.c
-	$(CC) $(CFLAGS) -c make.c
+maje: includes.o
+includes.o: maje.h
+includes.o: includes.c
+	$(CC) $(CFLAGS) -c includes.c
 
-maje: sources.o
-sources.o: sources.c
-	$(CC) $(CFLAGS) -c sources.c
+maje: list.o
+list.o: maje.h
+list.o: list.c
+	$(CC) $(CFLAGS) -c list.c
 
 maje: main.o
+main.o: maje.h
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
 
 maje: maje.o
+maje.o: maje.h
 maje.o: maje.c
 	$(CC) $(CFLAGS) -c maje.c
 
+maje: make.o
+make.o: maje.h
+make.o: make.c
+	$(CC) $(CFLAGS) -c make.c
+
+maje: sources.o
+sources.o: maje.h
+sources.o: sources.c
+	$(CC) $(CFLAGS) -c sources.c
+
 maje:
-	$(LD) $(LDFLAGS) -o $@ *.o
+	$(LD) $(LDFLAGS) -o $@ *.o $(LDLIBS)

@@ -19,6 +19,7 @@ static void make_header(FILE *makefile, const char *target)
 	fprintf(makefile, "LD=$(CC)\n");
 	fprintf(makefile, "CFLAGS=-Wall -Wextra -Wpedantic -Werror -g\n");
 	fprintf(makefile, "LDFLAGS=\n");
+	fprintf(makefile, "LDLIBS=\n");
 	fprintf(makefile, "\n");
 
 	fprintf(makefile, "all: %s\n\n", target);
@@ -27,15 +28,18 @@ static void make_header(FILE *makefile, const char *target)
 	fprintf(makefile, "\trm -f %s *.o\n\n", target);
 }
 
-static void add_object(FILE *makefile, const char *src, const char *target)
+static void add_object(FILE *makefile, const struct majefile *src, const char *target)
 {
-	char *fullobj = strdup(src);
+	char *fullobj = strdup(src->path);
 	char *obj = basename(fullobj);
 	obj[strlen(obj) - 1] = 'o';
 
 	fprintf(makefile, "%s: %s\n", target, obj);
-	fprintf(makefile, "%s: %s\n", obj, src);
-	fprintf(makefile, "\t$(CC) $(CFLAGS) -c %s\n\n", src);
+	for (struct majefile *inc = find_includes(src); inc != NULL; inc = inc->next) {
+		fprintf(makefile, "%s: %s\n", obj, inc->path);
+	}
+	fprintf(makefile, "%s: %s\n", obj, src->path);
+	fprintf(makefile, "\t$(CC) $(CFLAGS) -c %s\n\n", src->path);
 
 	free(fullobj);
 }
@@ -50,11 +54,11 @@ void make_makefile(const char *makepath, struct majefile *sources, const char *t
 
 	make_header(makefile, target);
 	for (struct majefile *src = sources; src != NULL; src = src->next) {
-		add_object(makefile, src->path, target);
+		add_object(makefile, src, target);
 	}
 
 	fprintf(makefile, "%s:\n", target);
-	fprintf(makefile, "\t$(LD) $(LDFLAGS) -o $@ *.o\n");
+	fprintf(makefile, "\t$(LD) $(LDFLAGS) -o $@ *.o $(LDLIBS)\n");
 
 	fclose(makefile);
 }

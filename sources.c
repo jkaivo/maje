@@ -6,7 +6,6 @@
 #include "maje.h"
 
 static struct majefile *filelist = NULL;
-static struct majefile *tail = NULL;
 
 static int add_source(const char *path, const struct stat *st, int flags, struct FTW *ft)
 {
@@ -17,21 +16,9 @@ static int add_source(const char *path, const struct stat *st, int flags, struct
 	}
 
 	if (strcmp(path + strlen(path) - 2, ".c") == 0) {
-		struct majefile *tmp = malloc(sizeof(*filelist) + strlen(path) + 1);
-		if (tmp == NULL) {
+		filelist = insert_file(filelist, path, st);
+		if (filelist == NULL) {
 			return 1;
-		}
-
-		tmp->next = NULL;
-		tmp->st = *st;
-		strcpy(tmp->path, path);
-
-		if (tail == NULL) {
-			filelist = tmp;
-			tail = filelist;
-		} else {
-			tail->next = tmp;
-			tail = tail->next;
 		}
 	}
 
@@ -41,5 +28,14 @@ static int add_source(const char *path, const struct stat *st, int flags, struct
 struct majefile * find_source_files(const char *dir)
 {
 	nftw(dir, add_source, -1, 0);
+
+	if (filelist == NULL) {
+		return NULL;
+	}
+
+	while (filelist->prev != NULL) {
+		filelist = filelist->prev;
+	}
+
 	return filelist;
 }
