@@ -8,7 +8,7 @@
 
 static void usage(char *progname)
 {
-	printf("usage: %s [-n] [dir]\n", progname);
+	printf("usage: %s [-n]\n", progname);
 }
 
 int main(int argc, char *argv[])
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (optind < argc - 1) {
+	if (optind < argc) {
 		fprintf(stderr, "maje: extra operands\n");
 		return 1;
 	}

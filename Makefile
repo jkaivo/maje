@@ -11,41 +11,43 @@ LD=$(CC)
 CFLAGS=-Wall -Wextra -Wpedantic -Werror -g
 LDFLAGS=
 LDLIBS=
+SRCDIR=.
+OBJDIR=.
 
 all: maje
 
 clean:
 	rm -f maje *.o
 
-maje: includes.o
-includes.o: maje.h
-includes.o: includes.c
-	$(CC) $(CFLAGS) -c includes.c
+maje: $(OBJDIR)/includes.o
+$(OBJDIR)/includes.o: $(SRCDIR)/maje.h
+$(OBJDIR)/includes.o: $(SRCDIR)/includes.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/includes.c
 
-maje: list.o
-list.o: maje.h
-list.o: list.c
-	$(CC) $(CFLAGS) -c list.c
+maje: $(OBJDIR)/list.o
+$(OBJDIR)/list.o: $(SRCDIR)/maje.h
+$(OBJDIR)/list.o: $(SRCDIR)/list.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/list.c
 
-maje: main.o
-main.o: maje.h
-main.o: main.c
-	$(CC) $(CFLAGS) -c main.c
+maje: $(OBJDIR)/main.o
+$(OBJDIR)/main.o: $(SRCDIR)/maje.h
+$(OBJDIR)/main.o: $(SRCDIR)/main.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/main.c
 
-maje: maje.o
-maje.o: maje.h
-maje.o: maje.c
-	$(CC) $(CFLAGS) -c maje.c
+maje: $(OBJDIR)/maje.o
+$(OBJDIR)/maje.o: $(SRCDIR)/maje.h
+$(OBJDIR)/maje.o: $(SRCDIR)/maje.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/maje.c
 
-maje: make.o
-make.o: maje.h
-make.o: make.c
-	$(CC) $(CFLAGS) -c make.c
+maje: $(OBJDIR)/make.o
+$(OBJDIR)/make.o: $(SRCDIR)/maje.h
+$(OBJDIR)/make.o: $(SRCDIR)/make.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/make.c
 
-maje: sources.o
-sources.o: maje.h
-sources.o: sources.c
-	$(CC) $(CFLAGS) -c sources.c
+maje: $(OBJDIR)/sources.o
+$(OBJDIR)/sources.o: $(SRCDIR)/maje.h
+$(OBJDIR)/sources.o: $(SRCDIR)/sources.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/sources.c
 
 maje:
-	$(LD) $(LDFLAGS) -o $@ *.o $(LDLIBS)
+	$(LD) $(LDFLAGS) -o $@ $(OBJDIR)/*.o $(LDLIBS)

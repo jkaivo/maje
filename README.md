@@ -23,12 +23,24 @@ Usage
 
 Run Maje with:
 
-    maje [-n] [dir]
+    maje [-n]
 
 By default, Maje will execute `make` when it is done creating the Makefile. Use
 the `-n` option to prevent this.
 
-By default, Maje generates a Makefile for sources in the current directory.
-You can specify a directory as a command line parameter to generate a Makefile
-to build binaries in a separate directory from the source. Maje will always
-build Makefiles and binaries in the current directory.
+Maje creates Makefiles with prefixes $(SRCDIR) and $(OBJDIR) for the source
+directory and object directory, respectively. By default these are set to
+`.` (the current directory). An out-of-tree build can be accomplished by 
+first generating the Makefile in the source directory and manually specifying
+the object directory as an option to `make`:
+
+    maje -n
+    mkdir obj
+    make OBDIR=obj
+
+Or:
+
+    maje -n
+    mkdir ../build
+    cd ../build
+    make -f ${OLDPWD}/Makefile SRCDIR=${OLDPWD}

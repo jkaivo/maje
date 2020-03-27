@@ -20,6 +20,8 @@ static void make_header(FILE *makefile, const char *target)
 	fprintf(makefile, "CFLAGS=-Wall -Wextra -Wpedantic -Werror -g\n");
 	fprintf(makefile, "LDFLAGS=\n");
 	fprintf(makefile, "LDLIBS=\n");
+	fprintf(makefile, "SRCDIR=.\n");
+	fprintf(makefile, "OBJDIR=.\n");
 	fprintf(makefile, "\n");
 
 	fprintf(makefile, "all: %s\n\n", target);
@@ -34,12 +36,13 @@ static void add_object(FILE *makefile, const struct majefile *src, const char *t
 	char *obj = basename(fullobj);
 	obj[strlen(obj) - 1] = 'o';
 
-	fprintf(makefile, "%s: %s\n", target, obj);
+	fprintf(makefile, "%s: $(OBJDIR)/%s\n", target, obj);
 	for (struct majefile *inc = find_includes(src); inc != NULL; inc = inc->next) {
-		fprintf(makefile, "%s: %s\n", obj, inc->path);
+		fprintf(makefile, "$(OBJDIR)/%s: $(SRCDIR)/%s\n",
+			obj, inc->path);
 	}
-	fprintf(makefile, "%s: %s\n", obj, src->path);
-	fprintf(makefile, "\t$(CC) $(CFLAGS) -c %s\n\n", src->path);
+	fprintf(makefile, "$(OBJDIR)/%s: $(SRCDIR)/%s\n", obj, src->path);
+	fprintf(makefile, "\t$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/%s\n\n", src->path);
 
 	free(fullobj);
 }
@@ -58,7 +61,7 @@ void make_makefile(const char *makepath, struct majefile *sources, const char *t
 	}
 
 	fprintf(makefile, "%s:\n", target);
-	fprintf(makefile, "\t$(LD) $(LDFLAGS) -o $@ *.o $(LDLIBS)\n");
+	fprintf(makefile, "\t$(LD) $(LDFLAGS) -o $@ $(OBJDIR)/*.o $(LDLIBS)\n");
 
 	fclose(makefile);
 }
