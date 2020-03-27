@@ -38,7 +38,7 @@ static bool matches(const struct majefile * restrict file, const regex_t * restr
 char *find_main(struct majefile *sources)
 {
 	regex_t re;
-	int rc = regcomp(&re, "int[[:space:]]+main[[:space:]\\(]",
+	int rc = regcomp(&re, "int[[:space:]]+main[[:space:]]*\\(",
 		REG_EXTENDED | REG_NEWLINE | REG_NOSUB);
 	if (rc != 0) {
 		fprintf(stderr, "maje: regcomp() failed\n");
