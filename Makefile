@@ -4,8 +4,6 @@
 # See https://gitlab.com/jkaivo/maje/ for more information
 # Do not edit this Makefile by hand
 
-default: all
-
 CC=c99
 LD=$(CC)
 CFLAGS=-Wall -Wextra -Wpedantic -Werror -g
@@ -13,41 +11,42 @@ LDFLAGS=
 LDLIBS=
 SRCDIR=.
 OBJDIR=.
+BINDIR=$(OBJDIR)
 
-all: maje
+all: $(BINDIR)/maje
 
 clean:
-	rm -f maje *.o
+	rm -f $(BINDIR)/maje $(OBJDIR)/*.o
 
-maje: $(OBJDIR)/includes.o
-$(OBJDIR)/includes.o: $(SRCDIR)/maje.h
-$(OBJDIR)/includes.o: $(SRCDIR)/includes.c
-	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/includes.c
-
-maje: $(OBJDIR)/list.o
-$(OBJDIR)/list.o: $(SRCDIR)/maje.h
-$(OBJDIR)/list.o: $(SRCDIR)/list.c
-	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/list.c
-
-maje: $(OBJDIR)/main.o
-$(OBJDIR)/main.o: $(SRCDIR)/maje.h
-$(OBJDIR)/main.o: $(SRCDIR)/main.c
-	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/main.c
-
-maje: $(OBJDIR)/maje.o
-$(OBJDIR)/maje.o: $(SRCDIR)/maje.h
-$(OBJDIR)/maje.o: $(SRCDIR)/maje.c
-	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/maje.c
-
-maje: $(OBJDIR)/make.o
+$(BINDIR)/maje: $(OBJDIR)/make.o
 $(OBJDIR)/make.o: $(SRCDIR)/maje.h
 $(OBJDIR)/make.o: $(SRCDIR)/make.c
 	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/make.c
 
-maje: $(OBJDIR)/sources.o
+$(BINDIR)/maje: $(OBJDIR)/sources.o
 $(OBJDIR)/sources.o: $(SRCDIR)/maje.h
 $(OBJDIR)/sources.o: $(SRCDIR)/sources.c
 	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/sources.c
 
-maje:
+$(BINDIR)/maje: $(OBJDIR)/main.o
+$(OBJDIR)/main.o: $(SRCDIR)/maje.h
+$(OBJDIR)/main.o: $(SRCDIR)/main.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/main.c
+
+$(BINDIR)/maje: $(OBJDIR)/list.o
+$(OBJDIR)/list.o: $(SRCDIR)/maje.h
+$(OBJDIR)/list.o: $(SRCDIR)/list.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/list.c
+
+$(BINDIR)/maje: $(OBJDIR)/maje.o
+$(OBJDIR)/maje.o: $(SRCDIR)/maje.h
+$(OBJDIR)/maje.o: $(SRCDIR)/maje.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/maje.c
+
+$(BINDIR)/maje: $(OBJDIR)/includes.o
+$(OBJDIR)/includes.o: $(SRCDIR)/maje.h
+$(OBJDIR)/includes.o: $(SRCDIR)/includes.c
+	$(CC) $(CFLAGS) -o $@ -c $(SRCDIR)/includes.c
+
+$(BINDIR)/maje:
 	$(LD) $(LDFLAGS) -o $@ $(OBJDIR)/*.o $(LDLIBS)

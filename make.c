@@ -13,8 +13,6 @@ static void make_header(FILE *makefile, const char *target)
 	fprintf(makefile, "# See https://gitlab.com/jkaivo/maje/ for more information\n");
 	fprintf(makefile, "# Do not edit this Makefile by hand\n\n");
 
-	fprintf(makefile, "default: all\n\n");
-
 	fprintf(makefile, "CC=c99\n");
 	fprintf(makefile, "LD=$(CC)\n");
 	fprintf(makefile, "CFLAGS=-Wall -Wextra -Wpedantic -Werror -g\n");
@@ -22,12 +20,13 @@ static void make_header(FILE *makefile, const char *target)
 	fprintf(makefile, "LDLIBS=\n");
 	fprintf(makefile, "SRCDIR=.\n");
 	fprintf(makefile, "OBJDIR=.\n");
+	fprintf(makefile, "BINDIR=$(OBJDIR)\n");
 	fprintf(makefile, "\n");
 
-	fprintf(makefile, "all: %s\n\n", target);
+	fprintf(makefile, "all: $(BINDIR)/%s\n\n", target);
 
 	fprintf(makefile, "clean:\n");
-	fprintf(makefile, "\trm -f %s *.o\n\n", target);
+	fprintf(makefile, "\trm -f $(BINDIR)/%s $(OBJDIR)/*.o\n\n", target);
 }
 
 static void add_object(FILE *makefile, const struct majefile *src, const char *target)
@@ -36,7 +35,7 @@ static void add_object(FILE *makefile, const struct majefile *src, const char *t
 	char *obj = basename(fullobj);
 	obj[strlen(obj) - 1] = 'o';
 
-	fprintf(makefile, "%s: $(OBJDIR)/%s\n", target, obj);
+	fprintf(makefile, "$(BINDIR)/%s: $(OBJDIR)/%s\n", target, obj);
 	for (struct majefile *inc = find_includes(src); inc != NULL; inc = inc->next) {
 		fprintf(makefile, "$(OBJDIR)/%s: $(SRCDIR)/%s\n",
 			obj, inc->path);
@@ -60,7 +59,7 @@ void make_makefile(const char *makepath, struct majefile *sources, const char *t
 		add_object(makefile, src, target);
 	}
 
-	fprintf(makefile, "%s:\n", target);
+	fprintf(makefile, "$(BINDIR)/%s:\n", target);
 	fprintf(makefile, "\t$(LD) $(LDFLAGS) -o $@ $(OBJDIR)/*.o $(LDLIBS)\n");
 
 	fclose(makefile);
