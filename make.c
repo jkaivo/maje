@@ -21,12 +21,16 @@ static void make_header(FILE *makefile, const char *target)
 	fprintf(makefile, "SRCDIR=.\n");
 	fprintf(makefile, "OBJDIR=.\n");
 	fprintf(makefile, "BINDIR=$(OBJDIR)\n");
+	fprintf(makefile, "DESTDIR=/usr/local\n");
 	fprintf(makefile, "\n");
 
 	fprintf(makefile, "all: $(BINDIR)/%s\n\n", target);
 
 	fprintf(makefile, "clean:\n");
 	fprintf(makefile, "\trm -f $(BINDIR)/%s $(OBJDIR)/*.o\n\n", target);
+
+	fprintf(makefile, "install: $(BINDIR)/%s\n", target);
+	fprintf(makefile, "\tcp $(BINDIR)/%s $(DESTDIR)/bin\n\n", target);
 }
 
 static void add_object(FILE *makefile, const struct majefile *src, const char *target)
